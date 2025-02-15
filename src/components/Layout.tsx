@@ -78,47 +78,63 @@ const Layout = () => {
         style={{
           display: "flex",
           alignItems: "center",
-          justifyContent: "space-between",
+          justifyContent: "center",
           background: "#fff",
+          padding: 0,
         }}
       >
-        <Menu
-          mode="horizontal"
-          items={menuItems}
-          onClick={handleMenuClick}
-          style={{
-            border: "none",
-            flex: 1,
-            minWidth: "400px",
-            backgroundColor: "transparent",
-          }}
-        />
-
-        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          <Search
-            placeholder="搜索..."
-            enterButton={<SearchOutlined />}
-            onSearch={handleSearch}
-            style={{ width: 300 }}
+        <div style={{ 
+          width: "100%",
+          maxWidth: "1200px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}>
+          <Menu
+            mode="horizontal"
+            items={menuItems}
+            onClick={handleMenuClick}
+            style={{
+              border: "none",
+              flex: 1,
+              minWidth: "400px",
+              backgroundColor: "transparent",
+            }}
           />
-          <Button
-            type="primary"
-            icon={<UserOutlined />}
-            onClick={handleLoginClick}
-            style={{ fontWeight: "bold" }}
-          >
-            登录
-          </Button>
-          <Badge count={0} onClick={handleCartClick}>
-            <ShoppingCartOutlined
-              style={{ fontSize: "24px", cursor: "pointer" }}
+
+          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+            <Search
+              placeholder="搜索..."
+              enterButton={<SearchOutlined />}
+              onSearch={handleSearch}
+              style={{ width: 300 }}
             />
-          </Badge>
+            <Button
+              type="primary"
+              icon={<UserOutlined />}
+              onClick={handleLoginClick}
+              style={{ fontWeight: "bold" }}
+            >
+              登录
+            </Button>
+            <Badge count={0} onClick={handleCartClick}>
+              <ShoppingCartOutlined
+                style={{ fontSize: "24px", cursor: "pointer" }}
+              />
+            </Badge>
+          </div>
         </div>
       </Header>
 
-      <Content style={{ padding: "0 50px", minHeight: "calc(100vh - 134px)" }}>
-        <Outlet />
+      <Content style={{ 
+        padding: "0 50px", 
+        minHeight: "calc(100vh - 134px)",
+        display: "flex",
+        justifyContent: "center",
+      }}>
+        <div style={{ width: "100%", maxWidth: "1200px" }}>
+          <Outlet />
+        </div>
       </Content>
 
       <Footer style={{ textAlign: "center", background: "#fff" }}>
