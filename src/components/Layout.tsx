@@ -1,11 +1,8 @@
-import React from "react";
 import {
   Layout as AntLayout,
   Menu,
   Input,
   Button,
-  Dropdown,
-  Space,
   Badge,
 } from "antd";
 import {
@@ -35,6 +32,23 @@ const categoryItems: MenuProps["items"] = [
   },
 ];
 
+// 导航菜单项
+const menuItems: MenuProps["items"] = [
+  {
+    key: "home",
+    label: "首页",
+  },
+  {
+    key: "category",
+    label: "分类",
+    children: categoryItems,
+  },
+  {
+    key: "about",
+    label: "关于",
+  },
+];
+
 const Layout = () => {
   return (
     <AntLayout>
@@ -46,12 +60,16 @@ const Layout = () => {
           background: "#fff",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <Dropdown menu={{ items: categoryItems }}>
-            <Button type="link">分类</Button>
-          </Dropdown>
-          <Button type="link">About</Button>
-        </div>
+        <Menu
+          mode="horizontal"
+          items={menuItems}
+          style={{
+            border: "none",
+            flex: 1,
+            minWidth: "400px",
+            backgroundColor: "transparent",
+          }}
+        />
 
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
           <Search
@@ -59,7 +77,11 @@ const Layout = () => {
             enterButton={<SearchOutlined />}
             style={{ width: 300 }}
           />
-          <Button type="primary" icon={<UserOutlined />}>
+          <Button
+            type="primary"
+            icon={<UserOutlined />}
+            style={{ fontWeight: "bold" }}
+          >
             登录
           </Button>
           <Badge count={0}>
