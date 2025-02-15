@@ -1,5 +1,6 @@
 import { useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { Card } from 'antd';
 
 interface Product {
   product_id: number;
@@ -36,20 +37,33 @@ const Search = () => {
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">搜索结果</h1>
-      <p className="mb-4">搜索关键词: {query}</p>
       
       {loading ? (
         <div>加载中...</div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="flex flex-wrap justify-center gap-4">
           {products.map((product) => (
-            <div key={product.product_id} className="border rounded-lg p-4 shadow-sm">
-              <img src={product.img} alt={product.product_name} className="w-full h-48 object-cover mb-2" />
-              <h2 className="text-lg font-semibold">{product.product_name}</h2>
-              <p className="text-red-600 font-bold">¥{product.price}</p>
-              <p className="text-gray-600 text-sm mt-2 line-clamp-2">{product.description}</p>
-              <p className="text-gray-500 text-sm mt-1">库存: {product.quantity}</p>
-            </div>
+            <Card
+              key={product.product_id}
+              hoverable
+              style={{ width: 300, flex: '0 0 auto' }}
+              cover={
+                <img
+                  alt={product.product_name}
+                  src={product.img}
+                  style={{ height: 200, objectFit: 'cover' }}
+                />
+              }
+            >
+              <Card.Meta
+                title={product.product_name}
+                description={
+                  <div>
+                    <p className="text-red-600 font-bold text-lg">¥{product.price}</p>
+                  </div>
+                }
+              />
+            </Card>
           ))}
         </div>
       )}

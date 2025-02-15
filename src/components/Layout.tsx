@@ -5,7 +5,7 @@ import {
   Button,
   Badge,
 } from "antd";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   SearchOutlined,
   ShoppingCartOutlined,
@@ -39,7 +39,7 @@ const menuItems: MenuProps["items"] = [
   {
     key: "/category",
     label: "分类",
-    children: categoryItems.map(item => ({
+    children: categoryItems?.map(item => item && ({
       ...item,
       key: `/category/${item.key}`
     })),
@@ -52,6 +52,11 @@ const menuItems: MenuProps["items"] = [
 
 const Layout = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  // 从 URL 中获取搜索参数
+  const searchParams = new URLSearchParams(location.search);
+  const searchQuery = searchParams.get('q') || '';
 
   const handleMenuClick = ({ key }: { key: string }) => {
     navigate(key);
@@ -127,6 +132,7 @@ const Layout = () => {
               enterButton={<SearchOutlined />}
               onSearch={handleSearch}
               style={{ width: 300 }}
+              defaultValue={searchQuery}
             />
             <Button
               type="primary"
