@@ -29,7 +29,7 @@ const Search = () => {
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">搜索结果</h1>
+      <h1 className="text-2xl font-bold mb-4 text-gray-800 text-center">搜索结果</h1>
       <ProductList products={products} loading={loading} />
     </div>
   );

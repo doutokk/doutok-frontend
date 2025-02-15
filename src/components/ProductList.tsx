@@ -20,7 +20,7 @@ const ProductList = ({ products, loading }: ProductListProps) => {
           to={`/product/${product.product_id}`}
           className="block  rounded-lg p-4 "
         >
-          <ProductCard product={product} />
+          <ProductCard product={product} key={product.product_id}/>
         </Link>
       ))}
     </div>

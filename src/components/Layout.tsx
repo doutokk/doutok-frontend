@@ -1,10 +1,4 @@
-import {
-  Layout as AntLayout,
-  Menu,
-  Input,
-  Button,
-  Badge,
-} from "antd";
+import { Layout as AntLayout, Menu, Input, Button, Badge } from "antd";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   SearchOutlined,
@@ -13,7 +7,7 @@ import {
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Outlet } from "react-router-dom";
-import LogoImage from '../assets/doutok_shop2.png';  // 添加这一行
+import LogoImage from "../assets/doutok_shop2.png"; // 添加这一行
 
 const { Header, Content, Footer } = AntLayout;
 const { Search } = Input;
@@ -21,16 +15,16 @@ const { Search } = Input;
 // 分类下拉菜单项
 const categoryItems: MenuProps["items"] = [
   {
-    key: "1",
-    label: "分类1",
+    key: "sticker",
+    label: "贴纸",
   },
   {
-    key: "2",
-    label: "分类2",
+    key: "t-shirt",
+    label: "T恤",
   },
   {
-    key: "3",
-    label: "分类3",
+    key: "coffee",
+    label: "咖啡",
   },
 ];
 
@@ -39,10 +33,13 @@ const menuItems: MenuProps["items"] = [
   {
     key: "/category",
     label: "分类",
-    children: categoryItems?.map(item => item && ({
-      ...item,
-      key: `/category/${item.key}`
-    })),
+    children: categoryItems?.map(
+      (item) =>
+        item && {
+          ...item,
+          key: `/category/${item.key}`,
+        }
+    ),
   },
   {
     key: "/about",
@@ -53,10 +50,10 @@ const menuItems: MenuProps["items"] = [
 const Layout = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   // 从 URL 中获取搜索参数
   const searchParams = new URLSearchParams(location.search);
-  const searchQuery = searchParams.get('q') || '';
+  const searchQuery = searchParams.get("q") || "";
 
   const handleMenuClick = ({ key }: { key: string }) => {
     navigate(key);
@@ -85,32 +82,36 @@ const Layout = () => {
           padding: 0,
         }}
       >
-        <div style={{ 
-          width: "100%",
-          maxWidth: "1200px",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}>
+        <div
+          style={{
+            width: "100%",
+            maxWidth: "1200px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
           <div style={{ display: "flex", alignItems: "center" }}>
-            <div 
-              style={{ 
-                display: "flex", 
-                alignItems: "center", 
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
                 cursor: "pointer",
-                marginRight: "32px"
+                marginRight: "32px",
               }}
               onClick={() => navigate("/")}
             >
-              <img 
-                src={LogoImage} 
-                alt="Doutok Shop Logo" 
-                style={{ 
+              <img
+                src={LogoImage}
+                alt="Doutok Shop Logo"
+                style={{
                   height: "40px",
-                  marginRight: "8px"
+                  marginRight: "8px",
                 }}
               />
-              <span style={{ fontSize: "20px", fontWeight: "bold" }}>Doutok Shop</span>
+              <span style={{ fontSize: "20px", fontWeight: "bold" }}>
+                Doutok Shop
+              </span>
             </div>
             <Menu
               mode="horizontal"
@@ -151,12 +152,14 @@ const Layout = () => {
         </div>
       </Header>
 
-      <Content style={{ 
-        padding: "0 50px", 
-        minHeight: "calc(100vh - 134px)",
-        display: "flex",
-        justifyContent: "center",
-      }}>
+      <Content
+        style={{
+          padding: "0 50px",
+          minHeight: "calc(100vh - 134px)",
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
         <div style={{ width: "100%", maxWidth: "1200px" }}>
           <Outlet />
         </div>
