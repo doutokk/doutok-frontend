@@ -1,26 +1,24 @@
 import { Form, Input, Button, Card, message } from 'antd';
-import { login } from '../services/auth';
+import { register } from '../services/auth';
 import { useNavigate, Link } from 'react-router-dom';
-import { setToken } from '../utils/auth';
 
-const Login = () => {
+const Register = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
 
   const onFinish = async (values: { email: string; password: string }) => {
     try {
-      const response = await login(values);
-      setToken(response.token);
-      message.success('登录成功');
-      navigate('/');
+      await register(values);
+      message.success('注册成功，请登录');
+      navigate('/login');
     } catch (error) {
-      message.error('登录失败');
+      message.error('注册失败');
     }
   };
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-      <Card title="登录" style={{ width: 400 }}>
+      <Card title="注册" style={{ width: 400 }}>
         <Form form={form} onFinish={onFinish}>
           <Form.Item
             name="email"
@@ -34,13 +32,30 @@ const Login = () => {
           >
             <Input.Password placeholder="请输入密码" />
           </Form.Item>
+          <Form.Item
+            name="confirmPassword"
+            dependencies={['password']}
+            rules={[
+              { required: true, message: '请确认密码' },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue('password') === value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(new Error('两次输入的密码不一致'));
+                },
+              }),
+            ]}
+          >
+            <Input.Password placeholder="请确认密码" />
+          </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit" block>
-              登录
+              注册
             </Button>
           </Form.Item>
           <div style={{ textAlign: 'center' }}>
-            还没有账号？ <Link to="/register">立即注册</Link>
+            已有账号？ <Link to="/login">返回登录</Link>
           </div>
         </Form>
       </Card>
@@ -48,4 +63,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

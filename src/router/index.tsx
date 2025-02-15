@@ -7,6 +7,7 @@ import Cart from '../pages/Cart';
 import Search from '../pages/Search';
 import Category from '../pages/Category';
 import ProductDetail from '../pages/ProductDetail';
+import Register from '../pages/Register';
 
 const router = createBrowserRouter([
   {
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
       {
         path: '/product/:id',
         element: <ProductDetail />,
+      },
+      {
+        path: '/register',
+        element: <Register />,
       },
     ],
   },
