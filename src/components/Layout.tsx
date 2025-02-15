@@ -37,7 +37,7 @@ const categoryItems: MenuProps["items"] = [
 const menuItems: MenuProps["items"] = [
   {
     key: "/",
-    label: "首页",
+    label: <span style={{ fontSize: "20px", fontWeight: "bold" }}>Doutok Shop</span>,
   },
   {
     key: "/category",
@@ -99,6 +99,7 @@ const Layout = () => {
               flex: 1,
               minWidth: "400px",
               backgroundColor: "transparent",
+              fontSize: "16px",
             }}
           />
 
