@@ -1,5 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 import ProductList from '../components/ProductList';
 import { Product } from '../types/product';
 import { API_BASE_URL } from '../config/api';
@@ -15,18 +16,11 @@ const Category = () => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`${API_BASE_URL}/product`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            page,
-            pageSize,
-            categoryName: id
-          }),
+        const { data } = await axios.post(`${API_BASE_URL}/product`, {
+          page,
+          pageSize,
+          categoryName: id
         });
-        const data = await response.json();
         setProducts(data.item);
       } catch (error) {
         console.error('获取产品列表失败:', error);

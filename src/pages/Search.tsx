@@ -1,5 +1,6 @@
 import { useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 import ProductList from '../components/ProductList';
 import { Product } from '../types/product';
 import { API_BASE_URL } from '../config/api';
@@ -14,8 +15,7 @@ const Search = () => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`${API_BASE_URL}/product`);
-        const data = await response.json();
+        const { data } = await axios.get(`${API_BASE_URL}/product`);
         setProducts(data.item);
       } catch (error) {
         console.error('获取产品列表失败:', error);

@@ -17,8 +17,8 @@ const Register = () => {
   };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-      <Card title="注册" style={{ width: 400 }}>
+    <div className="flex justify-center items-center h-screen">
+      <Card title="注册" className="w-[400px]">
         <Form form={form} onFinish={onFinish}>
           <Form.Item
             name="email"
@@ -54,7 +54,7 @@ const Register = () => {
               注册
             </Button>
           </Form.Item>
-          <div style={{ textAlign: 'center' }}>
+          <div className="text-center">
             已有账号？ <Link to="/login">返回登录</Link>
           </div>
         </Form>
