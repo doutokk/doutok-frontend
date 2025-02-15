@@ -13,6 +13,7 @@ import {
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Outlet } from "react-router-dom";
+import LogoImage from '../assets/doutok_shop2.png';  // 添加这一行
 
 const { Header, Content, Footer } = AntLayout;
 const { Search } = Input;
@@ -35,10 +36,6 @@ const categoryItems: MenuProps["items"] = [
 
 // 导航菜单项
 const menuItems: MenuProps["items"] = [
-  {
-    key: "/",
-    label: <span style={{ fontSize: "20px", fontWeight: "bold" }}>Doutok Shop</span>,
-  },
   {
     key: "/category",
     label: "分类",
@@ -90,18 +87,39 @@ const Layout = () => {
           justifyContent: "space-between",
           alignItems: "center",
         }}>
-          <Menu
-            mode="horizontal"
-            items={menuItems}
-            onClick={handleMenuClick}
-            style={{
-              border: "none",
-              flex: 1,
-              minWidth: "400px",
-              backgroundColor: "transparent",
-              fontSize: "16px",
-            }}
-          />
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <div 
+              style={{ 
+                display: "flex", 
+                alignItems: "center", 
+                cursor: "pointer",
+                marginRight: "32px"
+              }}
+              onClick={() => navigate("/")}
+            >
+              <img 
+                src={LogoImage} 
+                alt="Doutok Shop Logo" 
+                style={{ 
+                  height: "40px",
+                  marginRight: "8px"
+                }}
+              />
+              <span style={{ fontSize: "20px", fontWeight: "bold" }}>Doutok Shop</span>
+            </div>
+            <Menu
+              mode="horizontal"
+              items={menuItems}
+              onClick={handleMenuClick}
+              style={{
+                border: "none",
+                flex: 1,
+                minWidth: "200px",
+                backgroundColor: "transparent",
+                fontSize: "16px",
+              }}
+            />
+          </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
             <Search
