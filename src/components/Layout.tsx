@@ -5,6 +5,7 @@ import {
   Button,
   Badge,
 } from "antd";
+import { useNavigate } from "react-router-dom";
 import {
   SearchOutlined,
   ShoppingCartOutlined,
@@ -35,21 +36,42 @@ const categoryItems: MenuProps["items"] = [
 // 导航菜单项
 const menuItems: MenuProps["items"] = [
   {
-    key: "home",
+    key: "/",
     label: "首页",
   },
   {
-    key: "category",
+    key: "/category",
     label: "分类",
-    children: categoryItems,
+    children: categoryItems.map(item => ({
+      ...item,
+      key: `/category/${item.key}`
+    })),
   },
   {
-    key: "about",
+    key: "/about",
     label: "关于",
   },
 ];
 
 const Layout = () => {
+  const navigate = useNavigate();
+
+  const handleMenuClick = ({ key }: { key: string }) => {
+    navigate(key);
+  };
+
+  const handleLoginClick = () => {
+    navigate("/login");
+  };
+
+  const handleCartClick = () => {
+    navigate("/cart");
+  };
+
+  const handleSearch = (value: string) => {
+    navigate(`/search?q=${value}`);
+  };
+
   return (
     <AntLayout>
       <Header
@@ -63,6 +85,7 @@ const Layout = () => {
         <Menu
           mode="horizontal"
           items={menuItems}
+          onClick={handleMenuClick}
           style={{
             border: "none",
             flex: 1,
@@ -75,16 +98,18 @@ const Layout = () => {
           <Search
             placeholder="搜索..."
             enterButton={<SearchOutlined />}
+            onSearch={handleSearch}
             style={{ width: 300 }}
           />
           <Button
             type="primary"
             icon={<UserOutlined />}
+            onClick={handleLoginClick}
             style={{ fontWeight: "bold" }}
           >
             登录
           </Button>
-          <Badge count={0}>
+          <Badge count={0} onClick={handleCartClick}>
             <ShoppingCartOutlined
               style={{ fontSize: "24px", cursor: "pointer" }}
             />
