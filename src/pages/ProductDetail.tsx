@@ -1,8 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Product } from '../types/product';
-import { API_BASE_URL } from '../config/api';
+import http from '../utils/http';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -13,7 +12,7 @@ const ProductDetail = () => {
     const fetchProduct = async () => {
       setLoading(true);
       try {
-        const { data } = await axios.get(`${API_BASE_URL}/product/${id}`);
+        const { data } = await http.get(`/product/${id}`);
         setProduct(data);
       } catch (error) {
         console.error('获取商品详情失败:', error);

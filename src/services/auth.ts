@@ -1,5 +1,4 @@
-import axios from 'axios';
-import { API_BASE_URL } from '../config/api';
+import http from '../utils/http';
 
 interface LoginParams {
   email: string;
@@ -11,7 +10,7 @@ interface LoginResponse {
 }
 
 export const login = (params: LoginParams): Promise<LoginResponse> => {
-  return axios.post(`${API_BASE_URL}/login`, params).then(res => res.data);
+  return http.post(`/login`, params).then(res => res.data);
 };
 
 interface RegisterParams {
@@ -20,5 +19,5 @@ interface RegisterParams {
 }
 
 export const register = (params: RegisterParams): Promise<void> => {
-  return axios.post(`${API_BASE_URL}/register`, params).then(res => res.data);
+  return http.post(`/register`, params).then(res => res.data);
 };

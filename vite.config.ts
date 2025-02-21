@@ -10,4 +10,13 @@ export default defineConfig({
       plugins: [autoprefixer()],
     },
   },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'https://shop.kl.suyiiyii.top',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '')
+      }
+    }
+  }
 });

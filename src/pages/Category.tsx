@@ -1,9 +1,8 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import ProductList from '../components/ProductList';
 import { Product } from '../types/product';
-import { API_BASE_URL } from '../config/api';
+import http from '../utils/http';
 
 const Category = () => {
   const { id } = useParams();
@@ -16,7 +15,7 @@ const Category = () => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const { data } = await axios.post(`${API_BASE_URL}/product`, {
+        const { data } = await http.post(`/product`, {
           page,
           pageSize,
           categoryName: id
