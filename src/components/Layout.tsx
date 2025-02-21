@@ -1,9 +1,11 @@
-import { Layout as AntLayout, Menu, Input, Button, Badge } from "antd";
+import { Layout as AntLayout, Menu, Input, Button, Badge, Dropdown } from "antd";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   SearchOutlined,
   ShoppingCartOutlined,
   UserOutlined,
+  LogoutOutlined,
+  OrderedListOutlined,
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Outlet } from "react-router-dom";
@@ -50,6 +52,7 @@ const menuItems: MenuProps["items"] = [
 const Layout = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const isLoggedIn = localStorage.getItem("token") !== null;
 
   // 从 URL 中获取搜索参数
   const searchParams = new URLSearchParams(location.search);
@@ -70,6 +73,26 @@ const Layout = () => {
   const handleSearch = (value: string) => {
     navigate(`/search?q=${value}`);
   };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+
+  const userMenuItems: MenuProps["items"] = [
+    {
+      key: "orders",
+      label: "订单",
+      icon: <OrderedListOutlined />,
+      onClick: () => navigate("/orders"),
+    },
+    {
+      key: "logout",
+      label: "登出",
+      icon: <LogoutOutlined />,
+      onClick: handleLogout,
+    },
+  ];
 
   return (
     <AntLayout>
@@ -135,14 +158,22 @@ const Layout = () => {
               style={{ width: 300 }}
               defaultValue={searchQuery}
             />
-            <Button
-              type="primary"
-              icon={<UserOutlined />}
-              onClick={handleLoginClick}
-              style={{ fontWeight: "bold" }}
-            >
-              登录
-            </Button>
+            {isLoggedIn ? (
+              <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
+                <UserOutlined
+                  style={{ fontSize: "24px", cursor: "pointer" }}
+                />
+              </Dropdown>
+            ) : (
+              <Button
+                type="primary"
+                icon={<UserOutlined />}
+                onClick={handleLoginClick}
+                style={{ fontWeight: "bold" }}
+              >
+                登录
+              </Button>
+            )}
             <Badge count={0} onClick={handleCartClick}>
               <ShoppingCartOutlined
                 style={{ fontSize: "24px", cursor: "pointer" }}

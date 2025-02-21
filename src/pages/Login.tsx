@@ -1,7 +1,7 @@
 import { Form, Input, Button, Card, message } from 'antd';
 import { login } from '../services/auth';
 import { useNavigate, Link } from 'react-router-dom';
-import { setToken } from '../utils/auth';
+import { setToken } from '../utils/token';
 
 const Login = () => {
   const navigate = useNavigate();

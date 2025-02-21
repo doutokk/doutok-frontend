@@ -10,7 +10,7 @@ interface LoginResponse {
 }
 
 export const login = (params: LoginParams): Promise<LoginResponse> => {
-  return http.post(`/login`, params).then(res => res.data);
+  return http.post(`/user/login`, params).then(res => res.data);
 };
 
 interface RegisterParams {
@@ -19,5 +19,5 @@ interface RegisterParams {
 }
 
 export const register = (params: RegisterParams): Promise<void> => {
-  return http.post(`/register`, params).then(res => res.data);
+  return http.post(`/user/register`, params).then(res => res.data);
 };

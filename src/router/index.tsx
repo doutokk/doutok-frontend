@@ -8,6 +8,7 @@ import Search from '../pages/Search';
 import Category from '../pages/Category';
 import ProductDetail from '../pages/ProductDetail';
 import Register from '../pages/Register';
+import Orders from '../pages/Orders';
 
 const router = createBrowserRouter([
   {
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
       {
         path: '/register',
         element: <Register />,
+      },
+      {
+        path: '/orders',
+        element: <Orders />,
       },
     ],
   },
