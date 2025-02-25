@@ -7,8 +7,8 @@ import { useNavigate } from 'react-router-dom';
 const { Title, Text } = Typography;
 
 interface CartItem {
-  product_id: number;
-  product_name: string;
+  productId: number;
+  productName: string;
   description: string;
   price: number;
   quantity: number;
@@ -37,25 +37,41 @@ const Cart = () => {
     }
   };
 
-  const updateQuantity = async (productId: number, quantity: number) => {
+  const updateCartItem = async (productId: number, quantity: number) => {
     try {
-      await http.put('/cart/update', { product_id: productId, quantity });
+      console.log( {
+        items: [
+          {
+            product_id: productId,
+            quantity: quantity
+          }
+        ]
+      });
+      
+      await http.post('/cart/edit', {
+        items: [
+          {
+            product_id: productId,
+            quantity: quantity
+          }
+        ]
+      });
       fetchCartItems();
+      if (quantity === 0) {
+        message.success('商品已移除');
+      }
     } catch (error) {
-      console.error('更新数量失败:', error);
-      message.error('更新数量失败');
+      console.error('更新购物车失败:', error);
+      message.error('更新购物车失败');
     }
   };
 
+  const updateQuantity = async (productId: number, quantity: number) => {
+    updateCartItem(productId, quantity);
+  };
+
   const removeItem = async (productId: number) => {
-    try {
-      await http.delete(`/cart/${productId}`);
-      fetchCartItems();
-      message.success('商品已移除');
-    } catch (error) {
-      console.error('删除商品失败:', error);
-      message.error('删除商品失败');
-    }
+    updateCartItem(productId, 0);
   };
 
   const handleCheckout = async () => {
@@ -97,13 +113,13 @@ const Cart = () => {
                       <div className="w-24 h-24 md:w-32 md:h-32 overflow-hidden rounded-lg">
                         <img 
                           src={item.img} 
-                          alt={item.product_name} 
+                          alt={item.productName} 
                           className="w-full h-full object-cover"
                         />
                       </div>
                       <div className="flex flex-col gap-2">
                         <Text strong className="text-lg">
-                          {item.product_name}
+                          {item.productName}
                         </Text>
                         <Text type="secondary" className="text-sm">
                           {item.description}
@@ -111,25 +127,24 @@ const Cart = () => {
                         <Text type="danger" className="text-xl font-semibold">
                           ¥{item.price.toFixed(2)}
                         </Text>
-                        <Badge 
+                        {/* <Badge 
                           color={item.quantity > 20 ? 'green' : 'red'} 
                           text={`库存: ${item.quantity}`} 
-                        />
+                        /> */}
                       </div>
                     </Space>
                     <Space size="large" direction="vertical" align="end" className="min-w-[120px]">
                       <InputNumber
                         min={1}
-                        max={item.quantity}
                         value={item.quantity}
-                        onChange={(value) => updateQuantity(item.product_id, value || 1)}
+                        onChange={(value) => updateQuantity(item.productId, value || 1)}
                         addonAfter="件"
                         className="w-32"
                       />
                       <Button
                         danger
                         icon={<DeleteOutlined />}
-                        onClick={() => removeItem(item.product_id)}
+                        onClick={() => removeItem(item.productId)}
                         className="hover:opacity-80"
                       >
                         删除
