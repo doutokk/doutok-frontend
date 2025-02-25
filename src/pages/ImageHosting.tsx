@@ -44,18 +44,18 @@ const ImageHosting: React.FC = () => {
     // In a real app, you would fetch from your backend
     setTimeout(() => {
       const mockImages = [
-        {
-          id: '1',
-          url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-          filename: 'example-image-1.png',
-          uploadTime: '2023-06-15 14:22:33'
-        },
-        {
-          id: '2',
-          url: 'https://gw.alipayobjects.com/zos/antfincdn/LlvErxo8H9/photo-1503185912284-5271ff81b9a8.webp',
-          filename: 'example-image-2.jpg',
-          uploadTime: '2023-06-10 09:15:45'
-        }
+        // {
+        //   id: '1',
+        //   url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+        //   filename: 'example-image-1.png',
+        //   uploadTime: '2023-06-15 14:22:33'
+        // },
+        // {
+        //   id: '2',
+        //   url: 'https://gw.alipayobjects.com/zos/antfincdn/LlvErxo8H9/photo-1503185912284-5271ff81b9a8.webp',
+        //   filename: 'example-image-2.jpg',
+        //   uploadTime: '2023-06-10 09:15:45'
+        // }
       ];
       setImages(mockImages);
       setLoading(false);
