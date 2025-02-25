@@ -14,17 +14,17 @@ const ProductCard = ({ product }: ProductCardProps) => {
       style={{ width: 300, flex: '0 0 auto' }}
       cover={
         <img
-          alt={product.product_name}
+          alt={product.name}
           src={product.picture}
           style={{ height: 200, objectFit: 'cover' }}
         />
       }
     >
       <Card.Meta
-        title={product.product_name}
+        title={product.name}
         description={
           <div>
-            <p className="text-red-600 font-bold text-lg">¥{product.price}</p>
+            <p className="text-red-600 font-bold text-lg">¥{product.price}</p> 
           </div>
         }
       />
