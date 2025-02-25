@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Typography, Form, Input, Button, List, Card, Space, Divider, message } from 'antd';
 import { ShoppingCartOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import http from '../utils/http';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const { Title, Text } = Typography;
 
@@ -47,6 +47,21 @@ const OrderConfirmation = () => {
     }
   };
 
+  const clearCart = async () => {
+    try {
+      // Map all current cart items with quantity set to 0 to properly remove them
+      const itemsToRemove = cartItems.map(item => ({
+        product_id: item.productId,
+        quantity: 0
+      }));
+      
+      await http.post('/cart/edit', { items: itemsToRemove });
+    } catch (error) {
+      console.error('清空购物车失败:', error);
+      // Not showing an error message to the user since the order was created successfully
+    }
+  };
+
   const handleSubmit = async (values: AddressFormData) => {
     if (cartItems.length === 0) {
       message.error('购物车为空，无法创建订单');
@@ -74,6 +89,10 @@ const OrderConfirmation = () => {
       };
 
       await http.post('/order', orderData);
+      
+      // Clear the cart after successful order placement
+      await clearCart();
+      
       message.success('订单创建成功');
       navigate('/orders');
     } catch (error) {
