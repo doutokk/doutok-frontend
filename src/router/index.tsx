@@ -9,7 +9,8 @@ import Category from '../pages/Category';
 import ProductDetail from '../pages/ProductDetail';
 import Register from '../pages/Register';
 import Orders from '../pages/Orders';
-import ImageHosting from '../pages/ImageHosting'; // Import the ImageHosting component
+import ImageHosting from '../pages/ImageHosting';
+import OrderConfirmation from '../pages/OrderConfirmation'; // Import OrderConfirmation component
 
 const router = createBrowserRouter([
   {
@@ -55,6 +56,10 @@ const router = createBrowserRouter([
       {
         path: '/imagehosting',
         element: <ImageHosting />,
+      },
+      {
+        path: '/order-confirmation',
+        element: <OrderConfirmation />,
       },
     ],
   },

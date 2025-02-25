@@ -66,15 +66,8 @@ const Cart = () => {
     updateCartItem(productId, 0);
   };
 
-  const handleCheckout = async () => {
-    try {
-      await http.post('/cart/checkout');
-      message.success('下单成功');
-      navigate('/orders');
-    } catch (error) {
-      console.error('结算失败:', error);
-      message.error('结算失败');
-    }
+  const handleCheckout = () => {
+    navigate('/order-confirmation');
   };
 
   const totalAmount = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -162,7 +155,7 @@ const Cart = () => {
                 onClick={handleCheckout}
                 className="min-w-[120px] hover:opacity-90"
               >
-                结算
+                创建订单
               </Button>
             </div>
           </div>
