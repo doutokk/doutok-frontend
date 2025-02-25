@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Carousel } from 'antd';
+import { useNavigate } from 'react-router-dom';
 import ProductList from '../components/ProductList';
 import { Product } from '../types/product';
 import http from '../utils/http';
@@ -8,6 +9,7 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
   const carouselCount = 5; // Number of products to show in carousel
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchHotProducts = async () => {
@@ -27,6 +29,11 @@ const Home = () => {
 
   // Get first N products for carousel
   const carouselItems = products.slice(0, carouselCount);
+  
+  // Navigate to product detail page
+  const handleProductClick = (productId: number) => {
+    navigate(`/product/${productId}`);
+  };
 
   return (
     <div className="p-4">
@@ -35,7 +42,11 @@ const Home = () => {
         <div className="mb-8">
           <Carousel autoplay>
             {carouselItems.map((product) => (
-              <div key={product.id} className="carousel-item">
+              <div 
+                key={product.id} 
+                className="carousel-item cursor-pointer"
+                onClick={() => handleProductClick(product.id)}
+              >
                 <div className="relative h-64 md:h-96 overflow-hidden">
                   <img 
                     src={product.picture} 
