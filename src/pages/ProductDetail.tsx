@@ -51,8 +51,10 @@ const ProductDetail = () => {
 
     setAddingToCart(true);
     try {
+      console.log(product);
+      
       await http.post("/cart/edit", {
-        item: [
+        items: [
           {
             product_id: product.id,
             quantity: quantity,
