@@ -15,7 +15,6 @@ const Search = () => {
       setLoading(true);
       try {
         const { data } = await http.get(`/product?query=${query}`);
-        console.log(data);
         
         setProducts(data.item);
       } catch (error) {

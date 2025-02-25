@@ -26,14 +26,12 @@ export const AliyunOSSUpload = ({ value, onChange }: AliyunOSSUploadProps) => {
 
   const mockGetOSSData =async () => {
     const r = await axios.get("http://127.0.0.1:8000/get_post_signature_for_oss_upload")
-    console.log(r)
     return r.data
   };
 
   const init = async () => {
     try {
       const result = await mockGetOSSData();
-      console.log(result);
       
       setOSSData(result);
     } catch (error) {
@@ -46,7 +44,6 @@ export const AliyunOSSUpload = ({ value, onChange }: AliyunOSSUploadProps) => {
   }, []);
 
   const handleChange: UploadProps['onChange'] = ({ fileList }) => {
-    console.log('Aliyun OSS:', fileList);
     onChange?.([...fileList]);
   };
 

@@ -39,14 +39,6 @@ const Cart = () => {
 
   const updateCartItem = async (productId: number, quantity: number) => {
     try {
-      console.log( {
-        items: [
-          {
-            product_id: productId,
-            quantity: quantity
-          }
-        ]
-      });
       
       await http.post('/cart/edit', {
         items: [
