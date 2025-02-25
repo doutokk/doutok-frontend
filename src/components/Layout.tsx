@@ -6,6 +6,7 @@ import {
   UserOutlined,
   LogoutOutlined,
   OrderedListOutlined,
+  PictureOutlined, // Add this import for the image icon
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Outlet } from "react-router-dom";
@@ -85,6 +86,12 @@ const Layout = () => {
       label: "订单",
       icon: <OrderedListOutlined />,
       onClick: () => navigate("/orders"),
+    },
+    {
+      key: "imagehosting",
+      label: "图床",
+      icon: <PictureOutlined />,
+      onClick: () => navigate("/imagehosting"),
     },
     {
       key: "logout",

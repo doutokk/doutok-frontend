@@ -9,6 +9,7 @@ import Category from '../pages/Category';
 import ProductDetail from '../pages/ProductDetail';
 import Register from '../pages/Register';
 import Orders from '../pages/Orders';
+import ImageHosting from '../pages/ImageHosting'; // Import the ImageHosting component
 
 const router = createBrowserRouter([
   {
@@ -50,6 +51,10 @@ const router = createBrowserRouter([
       {
         path: '/orders',
         element: <Orders />,
+      },
+      {
+        path: '/imagehosting',
+        element: <ImageHosting />,
       },
     ],
   },
