@@ -205,6 +205,8 @@ const Layout = () => {
 
       <Footer style={{ textAlign: "center", background: "#fff" }}>
         © 2025 Doutok Team
+        <p>本网站为示例项目，不是真实的商城</p>
+        <p>所有素材来源网络</p>
       </Footer>
     </AntLayout>
   );
