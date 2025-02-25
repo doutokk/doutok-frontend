@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Upload, Button, Card, Row, Col, message, Typography, Input, Spin, Modal } from 'antd';
 import { UploadOutlined, CopyOutlined, DeleteOutlined } from '@ant-design/icons';
 import type { UploadFile, UploadProps } from 'antd/es/upload/interface';
+import axios from 'axios';
+import http from '../utils/http';
+import { AliyunOSSUpload } from '../components/OSSUpload';
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
@@ -13,8 +16,22 @@ interface ImageItem {
   uploadTime: string;
 }
 
+// OSS upload policy response interface
+interface OSSUploadPolicy {
+  key: string;
+  host: string;
+  policy: string;
+  securityToken: string;
+  signature: string;
+  xOssCredential: string;
+  xOssDate: string;
+  xOssSignatureVersion: string;
+}
+
 const ImageHosting: React.FC = () => {
+  // Modify the fileList state to store both UploadFile and original File objects
   const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [fileObjects, setFileObjects] = useState<Map<string, File>>(new Map());
   const [uploading, setUploading] = useState(false);
   const [images, setImages] = useState<ImageItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -45,25 +62,107 @@ const ImageHosting: React.FC = () => {
     }, 1000);
   }, []);
 
-  const handleUpload = () => {
+  // Get OSS upload policy from backend
+  const getUploadPolicy = async (fileName: string): Promise<OSSUploadPolicy> => {
+    try {
+      const response = await http.post('/file/upload', {
+        file_name: fileName
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Failed to get upload policy:', error);
+      throw error;
+    }
+  };
+
+  // Upload file directly to OSS
+  const uploadToOSS = async (file: File, policy: OSSUploadPolicy): Promise<string> => {
+    if (!file) {
+      throw new Error('File is undefined');
+    }
+    const formData = new FormData();
+    formData.append('key', policy.key);
+    formData.append('policy', policy.policy);
+    formData.append('x-oss-signature', policy.signature);
+    formData.append('x-oss-signature-version', policy.xOssSignatureVersion);
+    formData.append('x-oss-credential', policy.xOssCredential);
+    formData.append('x-oss-date', policy.xOssDate);
+    formData.append('success_action_status', '200'); // Added from OSSUpload example
+    formData.append('x-oss-security-token', policy.securityToken);
+    formData.append('file', file);
+
+    await axios.post(policy.host, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+
+    // Return the full URL of the uploaded file
+    return `${policy.host}/${policy.key}`;
+  };
+
+  const handleUpload = async () => {
+    if (fileList.length === 0) return;
+    
     setUploading(true);
     
-    // In a real app, you'd upload to your server here
-    setTimeout(() => {
-      message.success('上传成功!');
+    const newImages: ImageItem[] = [];
+    const failedUploads: string[] = [];
+    
+    try {
+      // Process each file in sequence to avoid race conditions
+      for (let i = 0; i < fileList.length; i++) {
+        const file = fileList[i];
+        const fileName = file.name;
+        
+        try {
+          // Get OSS upload policy from backend
+          const policy = await getUploadPolicy(fileName);
+          
+          // Get the actual File object from our Map
+          const actualFile = fileObjects.get(file.uid);
+          
+          // Check if we have the actual File object
+          if (!actualFile) {
+            console.error(`File object is missing for ${fileName}`);
+            failedUploads.push(fileName);
+            continue;
+          }
+          
+          // Upload directly to OSS using our stored File object
+          const fileUrl = await uploadToOSS(actualFile, policy);
+          
+          // Add successfully uploaded image to the list
+          newImages.push({
+            id: `new-${Date.now()}-${i}`,
+            url: fileUrl,
+            filename: fileName,
+            uploadTime: new Date().toLocaleString()
+          });
+          
+        } catch (error) {
+          console.error(`Failed to upload ${fileName}:`, error);
+          failedUploads.push(fileName);
+        }
+      }
       
-      // Add the uploaded images to the list
-      const newImages = fileList.map((file, index) => ({
-        id: `new-${Date.now()}-${index}`,
-        url: URL.createObjectURL(file.originFileObj as Blob),
-        filename: file.name,
-        uploadTime: new Date().toLocaleString()
-      }));
+      if (newImages.length > 0) {
+        setImages(prev => [...newImages, ...prev]);
+        message.success(`成功上传 ${newImages.length} 个文件`);
+      }
       
-      setImages([...newImages, ...images]);
+      if (failedUploads.length > 0) {
+        message.error(`${failedUploads.length} 个文件上传失败: ${failedUploads.join(', ')}`);
+      }
+      
+    } catch (error) {
+      message.error('上传过程中发生错误');
+      console.error('Upload error:', error);
+    } finally {
       setFileList([]);
+      setFileObjects(new Map()); // Clear file objects as well
       setUploading(false);
-    }, 2000);
+    }
   };
 
   const handlePreview = (image: ImageItem) => {
@@ -93,9 +192,24 @@ const ImageHosting: React.FC = () => {
   const uploadProps: UploadProps = {
     onRemove: file => {
       setFileList(fileList.filter(f => f.uid !== file.uid));
+      // Also remove from our file objects map
+      setFileObjects(prevMap => {
+        const newMap = new Map(prevMap);
+        newMap.delete(file.uid);
+        return newMap;
+      });
     },
     beforeUpload: file => {
-      setFileList([...fileList, file]);
+      // Store the UploadFile in fileList
+      setFileList(prev => [...prev, file as UploadFile]);
+      
+      // Store the actual File object in our Map using the UID as key
+      setFileObjects(prevMap => {
+        const newMap = new Map(prevMap);
+        newMap.set(file.uid, file);
+        return newMap;
+      });
+      
       return false;
     },
     fileList,
