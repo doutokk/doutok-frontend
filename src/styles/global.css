@@ -1,0 +1,13 @@
+/* Carousel styles */
+.ant-carousel .slick-slide {
+  text-align: center;
+  height: 24rem;
+  overflow: hidden;
+}
+
+.carousel-item {
+  height: 100%;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}

@@ -14,10 +14,10 @@ const Search = () => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const { data } = await http.get(`/product`);
+        const { data } = await http.get(`/product?query=${query}`);
         console.log(data);
         
-        setProducts(data);
+        setProducts(data.item);
       } catch (error) {
         console.error('获取产品列表失败:', error);
       } finally {

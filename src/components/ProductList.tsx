@@ -16,11 +16,11 @@ const ProductList = ({ products, loading }: ProductListProps) => {
     <div className="flex flex-wrap justify-center gap-4">
       {products.map((product) => (
         <Link 
-          key={product.product_id} 
-          to={`/product/${product.product_id}`}
+          key={product.id} 
+          to={`/product/${product.id}`}
           className="block  rounded-lg p-4 "
         >
-          <ProductCard product={product} key={product.product_id}/>
+          <ProductCard product={product} key={product.id}/>
         </Link>
       ))}
     </div>

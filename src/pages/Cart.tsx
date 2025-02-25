@@ -28,7 +28,7 @@ const Cart = () => {
     try {
       const response = await http.get('/cart');
 
-      setCartItems(response.data);
+      setCartItems(response.data.items);
     } catch (error) {
       console.error('获取购物车失败:', error);
       message.error('获取购物车失败');

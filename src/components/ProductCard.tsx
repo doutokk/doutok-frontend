@@ -6,6 +6,8 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ product }: ProductCardProps) => {
+  console.log(product);
+  
   return (
     <Card
       hoverable
@@ -13,7 +15,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
       cover={
         <img
           alt={product.product_name}
-          src={product.img}
+          src={product.picture}
           style={{ height: 200, objectFit: 'cover' }}
         />
       }

@@ -7,7 +7,7 @@ const { Title, Text } = Typography;
 
 interface OrderItem {
   item: {
-    product_id: number;
+    productId: number;
     quantity: number;
   };
 }
@@ -21,10 +21,10 @@ interface Address {
 }
 
 interface Order {
-  order_id: string;
-  user_id: number;
-  user_currency: string;
-  order_items: OrderItem[];
+  orderId: string;
+  userId: number;
+  userCurrency: string;
+  orderItems: OrderItem[];
   address: Address;
   email: string;
 }
@@ -38,6 +38,7 @@ const Orders = () => {
       try {
         const response = await http.get('/order');
         setOrders(response.data.orders);
+        
       } catch (error) {
         console.error('获取订单列表失败:', error);
       } finally {
@@ -66,17 +67,17 @@ const Orders = () => {
               <Card
                 title={
                   <div className="flex flex-wrap gap-4">
-                    <Text>订单号: {order.order_id}</Text>
-                    <Text>货币: {order.user_currency}</Text>
+                    <Text>订单号: {order.orderId}</Text>
+                    <Text>货币: {order.userCurrency}</Text>
                   </div>
                 }
                 className="w-full"
               >
                 <List
-                  dataSource={order.order_items}
+                  dataSource={order.orderItems}
                   renderItem={(orderItem) => (
                     <List.Item className="flex flex-wrap gap-4">
-                      <Text>商品ID: {orderItem.item.product_id}</Text>
+                      <Text>商品ID: {orderItem.item.productId}</Text>
                       <Text>数量: {orderItem.item.quantity}</Text>
                     </List.Item>
                   )}
