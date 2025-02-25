@@ -42,7 +42,7 @@ const Home = () => {
                     alt={product.name}
                     className="w-full h-full object-cover" 
                   />
-                  <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-4">
+                  <div className="absolute bottom-0 left-0 right-0 bg-black/50 bg-opacity-50 text-white p-4">
                     <h3 className="text-xl font-bold">{product.name}</h3>
                     <p className="text-red-400 font-bold">¥{product.price}</p>
                   </div>

@@ -4,7 +4,6 @@ import { UploadOutlined, CopyOutlined, DeleteOutlined } from '@ant-design/icons'
 import type { UploadFile, UploadProps } from 'antd/es/upload/interface';
 import axios from 'axios';
 import http from '../utils/http';
-import { AliyunOSSUpload } from '../components/OSSUpload';
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
