@@ -7,11 +7,11 @@ name: Docker
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
     # Publish semver tags as releases.
-    tags: [ 'v*.*.*' ]
+    tags: ["v*.*.*"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 env:
   # Use docker.io for Docker Hub if empty
@@ -19,10 +19,8 @@ env:
   # github.repository as <account>/<repo>
   IMAGE_NAME: ${{ github.repository }}next
 
-
 jobs:
   build:
-
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -41,7 +39,7 @@ jobs:
         if: github.event_name != 'pull_request'
         uses: sigstore/cosign-installer@59acb6260d9c0ba8f4a2f9d9b48431a222b68e20 #v3.5.0
         with:
-          cosign-release: 'v2.2.4'
+          cosign-release: "v2.2.4"
 
       # Set up BuildKit Docker container builder to be able to build
       # multi-platform images and export cache
@@ -64,7 +62,6 @@ jobs:
         run: |
           echo "DATE=$(date +'%y%m%d')" >> $GITHUB_ENV
           echo "COMMIT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-      
 
       # Extract metadata (tags, labels) for Docker
       # https://github.com/docker/metadata-action
@@ -88,7 +85,6 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-
       # Sign the resulting Docker image digest except on PRs.
       # This will only write to the public Rekor transparency log when the Docker
       # repository is public to avoid leaking data.  If you would like to publish
@@ -105,3 +101,32 @@ jobs:
         run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
     outputs:
       version: ${{ steps.meta.outputs.version }}
+
+  update-manifest:
+    runs-on: ubuntu-latest
+    needs: ["build"]
+    if: github.event_name == 'push'
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout manifest
+        if: github.event_name == 'push'
+        uses: actions/checkout@v4
+        with:
+          repository: suyiiyii/doutok-manifest
+          ref: main
+          token: ${{ secrets.GH_TOKEN }}
+      - name: Update manifest
+        if: github.event_name == 'push'
+        uses: mikefarah/yq@master
+        with:
+          cmd: yq eval '.frontend_tag = "${{ needs.build.outputs.version }}"' -i values.yaml
+      - name: Git Auto Commit
+        if: github.event_name == 'push'
+        uses: stefanzweifel/git-auto-commit-action@v5.0.1
+        with:
+          commit_message: "Update frontendnext image tag to ${{ needs.build.outputs.version }}"
+          branch: main
+          commit_user_name: "github-actions[bot]"
+          commit_user_email: "github-actions[bot]@users.noreply.github.com"
+          commit_author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
