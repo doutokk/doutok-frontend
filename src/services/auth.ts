@@ -9,8 +9,14 @@ interface LoginResponse {
   token: string;
 }
 
-export const login = (params: LoginParams): Promise<LoginResponse> => {
-  return http.post(`/user/login`, params).then(res => res.data);
+export const setToken = (token: string) => {
+  localStorage.setItem('token', token);
+};
+
+export const login = async (params: LoginParams): Promise<LoginResponse> => {
+  const response = await http.post(`/user/login`, params).then(res => res.data);
+  setToken(response.token);
+  return response;
 };
 
 interface RegisterParams {

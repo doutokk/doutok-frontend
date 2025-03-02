@@ -1,7 +1,6 @@
 import { Form, Input, Button, Card, message } from 'antd';
 import { login } from '../services/auth';
 import { useNavigate, Link } from 'react-router-dom';
-import { setToken } from '../utils/token';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -9,8 +8,7 @@ const Login = () => {
 
   const onFinish = async (values: { email: string; password: string }) => {
     try {
-      const response = await login(values);
-      setToken(response.token);
+      await login(values);
       message.success('登录成功');
       navigate('/');
     } catch (error) {
