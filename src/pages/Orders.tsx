@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { List, Card, Typography, Space, Empty, Image, Button } from "antd";
 import { ShoppingOutlined } from "@ant-design/icons";
 import http from "../utils/http";
@@ -46,6 +47,8 @@ interface CreatePaymentResponse {
 }
 
 const Orders = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [paymentStatuses, setPaymentStatuses] = useState<
@@ -88,6 +91,31 @@ const Orders = () => {
       fetchPaymentStatuses();
     }
   }, [orders]);
+
+  useEffect(() => {
+    const query = new URLSearchParams(location.search);
+    const tradeNo = query.get('trade_no');
+
+    if (tradeNo) {
+      const handlePaymentCallback = async () => {
+        try {
+          // Convert query parameters to object
+          const queryParams = Object.fromEntries(query.entries());
+          
+          // Make the payment direct API call
+          await http.post('/payment/direct', queryParams);
+        } catch (error) {
+          console.error('支付回调处理失败:', error);
+        } finally {
+          // Clear query parameters and refresh the page
+          navigate(location.pathname, { replace: true });
+          window.location.reload();
+        }
+      };
+
+      handlePaymentCallback();
+    }
+  }, [location, navigate]);
 
   const handleCreatePayment = async (orderId: string) => {
     setPaymentLoading((prev) => ({ ...prev, [orderId]: true }));
