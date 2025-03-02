@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # 构建项目
-RUN npm run build
+RUN npm run build2
 
 # 使用 Nginx 作为生产环境的基础镜像
 FROM nginx:1.25-alpine
