@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
-import { List, Card, Typography, Space, Empty, Image, Button } from "antd";
-import { ShoppingOutlined } from "@ant-design/icons";
-import http from "../utils/http";
-import { image } from "./image";
+import { useEffect, useState } from 'react';
+import { List, Card, Typography, Space, Empty, Image, Button } from 'antd';
+import { ShoppingOutlined } from '@ant-design/icons';
+import http from '../utils/http';
+
 const { Title, Text } = Typography;
 
 interface OrderItem {
@@ -35,7 +35,7 @@ interface Order {
   createdAt: number;
 }
 
-type PaymentStatus = "Uncreated" | "PAYING" | "FINISH";
+type PaymentStatus = 'Uncreated' | 'PAYING' | 'FINISH';
 
 interface PaymentStatusResponse {
   status: PaymentStatus;
@@ -48,20 +48,17 @@ interface CreatePaymentResponse {
 const Orders = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
-  const [paymentStatuses, setPaymentStatuses] = useState<
-    Record<string, PaymentStatus>
-  >({});
-  const [paymentLoading, setPaymentLoading] = useState<Record<string, boolean>>(
-    {}
-  );
+  const [paymentStatuses, setPaymentStatuses] = useState<Record<string, PaymentStatus>>({});
+  const [paymentLoading, setPaymentLoading] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await http.get("/order");
+        const response = await http.get('/order');
         setOrders(response.data.orders);
+        
       } catch (error) {
-        console.error("获取订单列表失败:", error);
+        console.error('获取订单列表失败:', error);
       } finally {
         setLoading(false);
       }
@@ -90,27 +87,27 @@ const Orders = () => {
   }, [orders]);
 
   const handleCreatePayment = async (orderId: string) => {
-    setPaymentLoading((prev) => ({ ...prev, [orderId]: true }));
+    setPaymentLoading(prev => ({ ...prev, [orderId]: true }));
     try {
-      const response = await http.post("/payment", { order_id: orderId });
+      const response = await http.post('/payment', { order_id: orderId });
       const data = response.data as CreatePaymentResponse;
       window.location.href = data.paymentUrl;
     } catch (error) {
-      console.error("创建支付失败:", error);
+      console.error('创建支付失败:', error);
     } finally {
-      setPaymentLoading((prev) => ({ ...prev, [orderId]: false }));
+      setPaymentLoading(prev => ({ ...prev, [orderId]: false }));
     }
   };
 
   const handleCancelPayment = async (orderId: string) => {
-    setPaymentLoading((prev) => ({ ...prev, [orderId]: true }));
+    setPaymentLoading(prev => ({ ...prev, [orderId]: true }));
     try {
       await http.post(`/payment/${orderId}/cancel`);
-      setPaymentStatuses((prev) => ({ ...prev, [orderId]: "Uncreated" }));
+      setPaymentStatuses(prev => ({ ...prev, [orderId]: 'Uncreated' }));
     } catch (error) {
-      console.error("取消支付失败:", error);
+      console.error('取消支付失败:', error);
     } finally {
-      setPaymentLoading((prev) => ({ ...prev, [orderId]: false }));
+      setPaymentLoading(prev => ({ ...prev, [orderId]: false }));
     }
   };
 
@@ -125,7 +122,7 @@ const Orders = () => {
         <ShoppingOutlined className="text-xl" />
         <h2 className="text-2xl font-bold m-0">我的订单</h2>
       </div>
-
+      
       {orders.length === 0 && !loading ? (
         <Empty description="暂无订单" />
       ) : (
@@ -141,32 +138,7 @@ const Orders = () => {
                       <Text>订单号: {order.orderId}</Text>
                       <Text>货币: {order.userCurrency}</Text>
                       {order.createdAt > 0 && (
-                        <Text>
-                          下单时间: {new Date(order.createdAt).toLocaleString()}
-                        </Text>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-4">
-                      {paymentStatuses[order.orderId] === "Uncreated" && (
-                        <Button
-                          type="primary"
-                          loading={paymentLoading[order.orderId]}
-                          onClick={() => handleCreatePayment(order.orderId)}
-                        >
-                          支付
-                        </Button>
-                      )}
-                      {paymentStatuses[order.orderId] === "PAYING" && (
-                        <Button
-                          danger
-                          loading={paymentLoading[order.orderId]}
-                          onClick={() => handleCancelPayment(order.orderId)}
-                        >
-                          取消支付
-                        </Button>
-                      )}
-                      {paymentStatuses[order.orderId] === "FINISH" && (
-                        <Text type="success">订单已完成</Text>
+                        <Text>下单时间: {new Date(order.createdAt).toLocaleString()}</Text>
                       )}
                     </div>
                   </div>
@@ -182,45 +154,42 @@ const Orders = () => {
                           <Image
                             src={orderItem.item.img}
                             alt={orderItem.item.productName}
-                            fallback={image}
                           />
                         </div>
-                        <div className="flex-1">
-                          <Title level={5}>{orderItem.item.productName}</Title>
-                          <Text type="secondary" ellipsis={{ rows: 2 }}>
-                            {orderItem.item.description}
-                          </Text>
-                          <div className="mt-2 flex flex-wrap gap-4">
-                            <Text>
-                              单价: {orderItem.item.price} {order.userCurrency}
-                            </Text>
-                            <Text>数量: {orderItem.item.quantity}</Text>
-                            <Text strong>
-                              总价: {orderItem.cost} {order.userCurrency}
-                            </Text>
-                          </div>
+                        <div>
+                          <Text strong>{orderItem.item.productName}</Text>
+                          <Text>{orderItem.item.description}</Text>
+                          <Text>{orderItem.item.price} {order.userCurrency}</Text>
+                          <Text>数量: {orderItem.item.quantity}</Text>
                         </div>
                       </div>
                     </List.Item>
                   )}
                 />
-                <div className="mt-4 space-y-2">
-                  <Text strong className="block">
-                    收货地址:
-                  </Text>
-                  <div className="text-gray-600">
-                    <p className="m-0">{order.address.streetAddress}</p>
-                    <p className="m-0">{`${order.address.city}, ${order.address.state}`}</p>
-                    <p className="m-0">{`${order.address.country} ${order.address.zipCode}`}</p>
-                    <p className="m-0">邮箱: {order.email}</p>
-                  </div>
-                </div>
-                <div className="mt-4 pt-4 border-t border-gray-200">
-                  <div className="flex justify-end">
-                    <Text strong className="text-lg">
-                      订单总金额: {calculateOrderTotal(order)}{" "}
-                      {order.userCurrency}
-                    </Text>
+                <div className="flex justify-between items-center mt-4">
+                  <Text strong>订单总金额: {calculateOrderTotal(order)} {order.userCurrency}</Text>
+                  <div className="flex items-center gap-4">
+                    {paymentStatuses[order.orderId] === 'Uncreated' && (
+                      <Button
+                        type="primary"
+                        loading={paymentLoading[order.orderId]}
+                        onClick={() => handleCreatePayment(order.orderId)}
+                      >
+                        支付
+                      </Button>
+                    )}
+                    {paymentStatuses[order.orderId] === 'PAYING' && (
+                      <Button
+                        danger
+                        loading={paymentLoading[order.orderId]}
+                        onClick={() => handleCancelPayment(order.orderId)}
+                      >
+                        取消支付
+                      </Button>
+                    )}
+                    {paymentStatuses[order.orderId] === 'FINISH' && (
+                      <Text type="success">订单已完成</Text>
+                    )}
                   </div>
                 </div>
               </Card>
