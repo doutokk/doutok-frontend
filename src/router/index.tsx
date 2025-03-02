@@ -11,6 +11,7 @@ import Register from '../pages/Register';
 import Orders from '../pages/Orders';
 import ImageHosting from '../pages/ImageHosting';
 import OrderConfirmation from '../pages/OrderConfirmation'; // Import OrderConfirmation component
+import AuthRoute from '../components/AuthRoute';
 
 const router = createBrowserRouter([
   {
@@ -31,7 +32,11 @@ const router = createBrowserRouter([
       },
       {
         path: '/cart',
-        element: <Cart />,
+        element: (
+          <AuthRoute>
+            <Cart />
+          </AuthRoute>
+        ),
       },
       {
         path: '/search',

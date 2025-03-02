@@ -1,16 +1,20 @@
 import { Form, Input, Button, Card, message } from 'antd';
 import { login } from '../services/auth';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { setToken } from '../utils/token';
 
 const Login = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [form] = Form.useForm();
 
   const onFinish = async (values: { email: string; password: string }) => {
     try {
-      await login(values);
+      const response = await login(values);
+      setToken(response.token);
       message.success('登录成功');
-      navigate('/');
+      const from = location.state?.from?.pathname || '/';
+      navigate(from);
     } catch (error) {
       message.error('登录失败');
     }

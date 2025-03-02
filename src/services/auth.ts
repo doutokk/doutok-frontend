@@ -28,6 +28,14 @@ export const hasRole = (role: string): boolean => {
   return roles.includes(role);
 };
 
+export const getToken = (): string | null => {
+  return localStorage.getItem('token');
+};
+
+export const isAuthenticated = (): boolean => {
+  return !!getToken();
+};
+
 export const login = async (params: LoginParams): Promise<LoginResponse> => {
   const response = await http.post(`/user/login`, params).then(res => res.data);
   setToken(response.token);
