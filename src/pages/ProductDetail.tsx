@@ -195,7 +195,10 @@ const ProductDetail = () => {
               <Tag key={category} color="blue">{category}</Tag>
             ))}
           </div>
-          <Text className="block mt-4">{product.description}</Text>
+          <div 
+            className="mt-4 product-description" 
+            dangerouslySetInnerHTML={{ __html: product.description || '' }}
+          />
           <Space className="mt-6">
             <InputNumber
               min={1}

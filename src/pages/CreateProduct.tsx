@@ -3,9 +3,9 @@ import { Card, Form, Input, InputNumber, Select, Button, message, Typography, Sp
 import { useNavigate } from 'react-router-dom';
 import http from '../utils/http';
 import ImageUploader from '../components/ImageUploader';
+import RichTextEditor from '../components/RichTextEditor';
 
 const { Title } = Typography;
-const { TextArea } = Input;
 const { Option } = Select;
 
 const categoryOptions = [
@@ -83,7 +83,7 @@ const CreateProduct: React.FC = () => {
           label="商品描述"
           rules={[{ required: true, message: '请输入商品描述' }]}
         >
-          <TextArea rows={4} placeholder="请输入商品描述" />
+          <RichTextEditor placeholder="请输入商品描述" />
         </Form.Item>
         
         <Form.Item

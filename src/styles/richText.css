@@ -1,0 +1,51 @@
+/* Styling for rich text content display */
+.product-description {
+  line-height: 1.6;
+  overflow-wrap: break-word;
+}
+
+.product-description h1 {
+  font-size: 2em;
+  margin-bottom: 0.5em;
+}
+
+.product-description h2 {
+  font-size: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.product-description h3 {
+  font-size: 1.17em;
+  margin-bottom: 0.5em;
+}
+
+.product-description p {
+  margin-bottom: 1em;
+}
+
+.product-description ul, 
+.product-description ol {
+  margin-left: 1.5em;
+  margin-bottom: 1em;
+}
+
+.product-description img {
+  max-width: 100%;
+  height: auto;
+}
+
+.product-description a {
+  color: #1677ff;
+  text-decoration: none;
+}
+
+.product-description a:hover {
+  text-decoration: underline;
+}
+
+.product-description blockquote {
+  border-left: 3px solid #ccc;
+  margin-left: 0;
+  padding-left: 1em;
+  color: #666;
+}

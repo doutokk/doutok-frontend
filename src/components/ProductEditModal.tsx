@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { Modal, Form, Input, InputNumber, Select, Button, Space } from 'antd';
 import { Product } from '../types/product';
+import RichTextEditor from './RichTextEditor';
 
-const { TextArea } = Input;
 const { Option } = Select;
 
 interface ProductEditModalProps {
@@ -80,7 +80,7 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
           label="商品描述"
           rules={[{ required: true, message: '请输入商品描述' }]}
         >
-          <TextArea rows={4} />
+          <RichTextEditor placeholder="请输入商品描述" />
         </Form.Item>
         
         <Form.Item
