@@ -195,10 +195,6 @@ const ProductDetail = () => {
               <Tag key={category} color="blue">{category}</Tag>
             ))}
           </div>
-          <div 
-            className="mt-4 product-description" 
-            dangerouslySetInnerHTML={{ __html: product.description || '' }}
-          />
           <Space className="mt-6">
             <InputNumber
               min={1}
@@ -242,6 +238,11 @@ const ProductDetail = () => {
           </Space>
         </div>
       </div>
+
+      <div 
+        className="mt-8 product-description" 
+        dangerouslySetInnerHTML={{ __html: product.description || '' }}
+      />
 
       {isAdmin && (
         <ProductEditModal
