@@ -12,11 +12,12 @@ import {
   Space,
   Tag,
 } from "antd";
-import { ShoppingCartOutlined } from "@ant-design/icons";
+import { ShoppingCartOutlined, EditOutlined } from "@ant-design/icons";
 import { Product } from "../types/product";
 import http from "../utils/http";
 import { image } from "./image";
 import { isAuthenticated } from "../services/auth";
+import ProductEditModal from "../components/ProductEditModal";
 
 const { Title, Text } = Typography;
 
@@ -27,6 +28,8 @@ const ProductDetail = () => {
   const [loading, setLoading] = useState(false);
   const [addingToCart, setAddingToCart] = useState(false);
   const [quantity, setQuantity] = useState(1);
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -80,6 +83,42 @@ const ProductDetail = () => {
     }
   };
 
+  const showEditModal = () => {
+    setIsEditModalVisible(true);
+  };
+
+  const handleUpdateProduct = async (values: any) => {
+    if (!product) return;
+    
+    setIsUpdating(true);
+    try {
+      await http.put("/product/edit", {
+        product: {
+          id: product.id,
+          name: values.name,
+          description: values.description,
+          picture: values.picture,
+          price: values.price,
+          categories: values.categories,
+        },
+      });
+      
+      message.success("商品更新成功");
+      setIsEditModalVisible(false);
+      
+      // Update the product in the local state
+      setProduct({
+        ...product,
+        ...values,
+      });
+    } catch (error) {
+      console.error("更新商品失败:", error);
+      message.error("更新商品失败，请重试");
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -97,6 +136,14 @@ const ProductDetail = () => {
       />
     );
   }
+
+  const categoryOptions = [
+    { label: '贴纸', value: 'sticker' },
+    { label: '服装', value: 'clothing' },
+    { label: '数码', value: 'digital' },
+    { label: '书籍', value: 'book' },
+    { label: '其他', value: 'other' },
+  ];
 
   return (
     <Card className="m-4">
@@ -138,9 +185,25 @@ const ProductDetail = () => {
             >
               加入购物车
             </Button>
+            <Button
+              type="default"
+              icon={<EditOutlined />}
+              size="large"
+              onClick={showEditModal}
+            >
+              修改商品
+            </Button>
           </Space>
         </div>
       </div>
+
+      <ProductEditModal
+        visible={isEditModalVisible}
+        product={product}
+        loading={isUpdating}
+        onCancel={() => setIsEditModalVisible(false)}
+        onSubmit={handleUpdateProduct}
+      />
     </Card>
   );
 };

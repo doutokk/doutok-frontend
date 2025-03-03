@@ -10,7 +10,8 @@ import ProductDetail from '../pages/ProductDetail';
 import Register from '../pages/Register';
 import Orders from '../pages/Orders';
 import ImageHosting from '../pages/ImageHosting';
-import OrderConfirmation from '../pages/OrderConfirmation'; // Import OrderConfirmation component
+import OrderConfirmation from '../pages/OrderConfirmation';
+import CreateProduct from '../pages/CreateProduct'; // Import CreateProduct component
 import AuthRoute from '../components/AuthRoute';
 
 const router = createBrowserRouter([
@@ -65,6 +66,14 @@ const router = createBrowserRouter([
       {
         path: '/order-confirmation',
         element: <OrderConfirmation />,
+      },
+      {
+        path: '/create-product',
+        element: (
+          <AuthRoute>
+            <CreateProduct />
+          </AuthRoute>
+        ),
       },
     ],
   },
