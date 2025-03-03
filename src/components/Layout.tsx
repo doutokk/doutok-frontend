@@ -12,6 +12,7 @@ import {
 import type { MenuProps } from "antd";
 import { Outlet } from "react-router-dom";
 import LogoImage from "../assets/doutok_shop2.png"; // 添加这一行
+import { hasRole } from "../services/auth"; // Import hasRole function
 
 const { Header, Content, Footer } = AntLayout;
 const { Search } = Input;
@@ -55,6 +56,7 @@ const Layout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const isLoggedIn = localStorage.getItem("token") !== null;
+  const isAdmin = hasRole("admin"); // Check if user has admin role
 
   // 从 URL 中获取搜索参数
   const searchParams = new URLSearchParams(location.search);
@@ -81,31 +83,46 @@ const Layout = () => {
     navigate("/login");
   };
 
-  const userMenuItems: MenuProps["items"] = [
+  const baseUserMenuItems = [
     {
       key: "orders",
       label: "订单",
       icon: <OrderedListOutlined />,
       onClick: () => navigate("/orders"),
     },
-    {
-      key: "imagehosting",
-      label: "图床",
-      icon: <PictureOutlined />,
-      onClick: () => navigate("/imagehosting"),
-    },
-    {
-      key: "create-product",
-      label: "创建商品",
-      icon: <ShopOutlined />,
-      onClick: () => navigate("/create-product"),
-    },
+  ];
+  
+  // Add admin-only menu items if user has admin role
+  const adminMenuItems = isAdmin 
+    ? [
+        {
+          key: "imagehosting",
+          label: "图床",
+          icon: <PictureOutlined />,
+          onClick: () => navigate("/imagehosting"),
+        },
+        {
+          key: "create-product",
+          label: "创建商品",
+          icon: <ShopOutlined />,
+          onClick: () => navigate("/create-product"),
+        },
+      ] 
+    : [];
+  
+  const logoutMenuItem = [
     {
       key: "logout",
       label: "登出",
       icon: <LogoutOutlined />,
       onClick: handleLogout,
     },
+  ];
+
+  const userMenuItems: MenuProps["items"] = [
+    ...baseUserMenuItems,
+    ...adminMenuItems,
+    ...logoutMenuItem,
   ];
 
   return (

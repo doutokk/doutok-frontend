@@ -11,12 +11,13 @@ import {
   InputNumber,
   Space,
   Tag,
+  Modal,
 } from "antd";
-import { ShoppingCartOutlined, EditOutlined } from "@ant-design/icons";
+import { ShoppingCartOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { Product } from "../types/product";
 import http from "../utils/http";
 import { image } from "./image";
-import { isAuthenticated } from "../services/auth";
+import { isAuthenticated, hasRole } from "../services/auth";
 import ProductEditModal from "../components/ProductEditModal";
 
 const { Title, Text } = Typography;
@@ -30,6 +31,9 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const isAdmin = hasRole("admin");
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -119,6 +123,31 @@ const ProductDetail = () => {
     }
   };
 
+  const handleDeleteProduct = () => {
+    if (!product) return;
+    
+    Modal.confirm({
+      title: '确认删除',
+      content: `确定要删除商品 "${product.name}" 吗？此操作不可撤销。`,
+      okText: '删除',
+      okType: 'danger',
+      cancelText: '取消',
+      onOk: async () => {
+        setIsDeleting(true);
+        try {
+          await http.delete(`/product/${product.id}`);
+          message.success('商品已成功删除');
+          navigate('/'); // Navigate to homepage after deletion
+        } catch (error) {
+          console.error('删除商品失败:', error);
+          message.error('删除商品失败，请重试');
+        } finally {
+          setIsDeleting(false);
+        }
+      }
+    });
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -185,25 +214,41 @@ const ProductDetail = () => {
             >
               加入购物车
             </Button>
-            <Button
-              type="default"
-              icon={<EditOutlined />}
-              size="large"
-              onClick={showEditModal}
-            >
-              修改商品
-            </Button>
+            {isAdmin && (
+              <>
+                <Button
+                  type="default"
+                  icon={<EditOutlined />}
+                  size="large"
+                  onClick={showEditModal}
+                >
+                  修改商品
+                </Button>
+                <Button
+                  type="default"
+                  icon={<DeleteOutlined />}
+                  size="large"
+                  onClick={handleDeleteProduct}
+                  loading={isDeleting}
+                  danger
+                >
+                  删除商品
+                </Button>
+              </>
+            )}
           </Space>
         </div>
       </div>
 
-      <ProductEditModal
-        visible={isEditModalVisible}
-        product={product}
-        loading={isUpdating}
-        onCancel={() => setIsEditModalVisible(false)}
-        onSubmit={handleUpdateProduct}
-      />
+      {isAdmin && (
+        <ProductEditModal
+          visible={isEditModalVisible}
+          product={product}
+          loading={isUpdating}
+          onCancel={() => setIsEditModalVisible(false)}
+          onSubmit={handleUpdateProduct}
+        />
+      )}
     </Card>
   );
 };
