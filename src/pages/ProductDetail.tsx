@@ -10,6 +10,7 @@ import {
   message,
   InputNumber,
   Space,
+  Tag,
 } from "antd";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import { Product } from "../types/product";
@@ -113,6 +114,11 @@ const ProductDetail = () => {
           <Text className="text-2xl text-red-600 block mt-4">
             ¥{product.price}
           </Text>
+          <div className="mt-2 mb-4">
+            {product.categories?.map((category) => (
+              <Tag key={category} color="blue">{category}</Tag>
+            ))}
+          </div>
           <Text className="block mt-4">{product.description}</Text>
           <Space className="mt-6">
             <InputNumber
