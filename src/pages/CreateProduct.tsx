@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Card, Form, Input, InputNumber, Select, Button, message, Typography } from 'antd';
+import { Card, Form, Input, InputNumber, Select, Button, message, Typography, Space, Image } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import http from '../utils/http';
+import ImageUploader from '../components/ImageUploader';
 
 const { Title } = Typography;
 const { TextArea } = Input;
@@ -20,14 +21,20 @@ const CreateProduct: React.FC = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [imageUrl, setImageUrl] = useState<string>('');
 
   const handleCreateProduct = async (values: any) => {
+    if (!imageUrl) {
+      message.error('请先上传商品图片');
+      return;
+    }
+
     setIsLoading(true);
     try {
       const response = await http.post("/product/create", {
         name: values.name,
         description: values.description,
-        picture: values.picture,
+        picture: imageUrl, // Use the uploaded image URL
         price: values.price,
         categories: values.categories,
       });
@@ -47,6 +54,10 @@ const CreateProduct: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleImageUploadSuccess = (url: string) => {
+    setImageUrl(url);
   };
 
   return (
@@ -76,11 +87,25 @@ const CreateProduct: React.FC = () => {
         </Form.Item>
         
         <Form.Item
-          name="picture"
-          label="商品图片URL"
-          rules={[{ required: true, message: '请输入商品图片URL' }]}
+          label="商品图片"
+          required
         >
-          <Input placeholder="请输入商品图片URL" />
+          <Space direction="vertical" style={{ width: '100%' }}>
+            <ImageUploader onUploadSuccess={handleImageUploadSuccess} />
+            
+            {/* Preview the uploaded image */}
+            {imageUrl && (
+              <div style={{ marginTop: 16 }}>
+                <p>已上传图片预览：</p>
+                <Image 
+                  src={imageUrl} 
+                  width={200} 
+                  alt="商品图片"
+                  style={{ objectFit: 'contain' }}
+                />
+              </div>
+            )}
+          </Space>
         </Form.Item>
         
         <Form.Item
