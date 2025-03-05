@@ -57,6 +57,7 @@ const Orders = () => {
   const [paymentLoading, setPaymentLoading] = useState<Record<string, boolean>>(
     {}
   );
+  const [cancelOrderLoading, setCancelOrderLoading] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -142,6 +143,22 @@ const Orders = () => {
     }
   };
 
+  const handleCancelOrder = async (orderId: string) => {
+    setCancelOrderLoading((prev) => ({ ...prev, [orderId]: true }));
+    try {
+      await http.post(`/order/${orderId}/cancel`);
+      // Refresh orders after cancellation
+      const response = await http.get("/order");
+      setOrders(response.data.orders);
+      // Update payment status
+      setPaymentStatuses((prev) => ({ ...prev, [orderId]: "CANCELLED" }));
+    } catch (error) {
+      console.error("取消订单失败:", error);
+    } finally {
+      setCancelOrderLoading((prev) => ({ ...prev, [orderId]: false }));
+    }
+  };
+
   // Calculate the total order amount
   const calculateOrderTotal = (order: Order): number => {
     return order.orderItems.reduce((total, item) => total + item.cost, 0);
@@ -207,6 +224,7 @@ const Orders = () => {
                     {order.userCurrency}
                   </Text>
                   <div className="flex items-center gap-4">
+                    {/* Show payment button for Uncreated or CREATED statuses */}
                     {(paymentStatuses[order.orderId] === "Uncreated" || paymentStatuses[order.orderId] === "CREATED") && (
                       <Button
                         type="primary"
@@ -216,6 +234,8 @@ const Orders = () => {
                         支付
                       </Button>
                     )}
+                    
+                    {/* Show cancel payment button for PAYING status */}
                     {paymentStatuses[order.orderId] === "PAYING" && (
                       <Button
                         danger
@@ -225,6 +245,20 @@ const Orders = () => {
                         取消支付
                       </Button>
                     )}
+                    
+                    {/* Show cancel order button for Uncreated, CREATED, or PAYING statuses */}
+                    {(paymentStatuses[order.orderId] === "Uncreated" || 
+                      paymentStatuses[order.orderId] === "CREATED" || 
+                      paymentStatuses[order.orderId] === "PAYING") && (
+                      <Button
+                        danger
+                        loading={cancelOrderLoading[order.orderId]}
+                        onClick={() => handleCancelOrder(order.orderId)}
+                      >
+                        取消订单
+                      </Button>
+                    )}
+                    
                     {paymentStatuses[order.orderId] === "FINISH" && (
                       <Text type="success">订单已完成</Text>
                     )}
