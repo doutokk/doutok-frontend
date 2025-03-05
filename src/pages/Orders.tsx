@@ -36,7 +36,7 @@ interface Order {
   createdAt: number;
 }
 
-type PaymentStatus = "Uncreated" | "CREATED" | "PAYING" | "FINISH";
+type PaymentStatus = "Uncreated" | "CREATED" | "PAYING" | "FINISH" | "CANCELLED";
 
 interface PaymentStatusResponse {
   status: PaymentStatus;
@@ -170,7 +170,7 @@ const Orders = () => {
                       <Text>货币: {order.userCurrency}</Text>
                       {order.createdAt > 0 && (
                         <Text>
-                          下单时间: {new Date(order.createdAt).toLocaleString()}
+                          下单时间: {new Date(order.createdAt*1000).toLocaleString()}
                         </Text>
                       )}
                     </div>
@@ -227,6 +227,9 @@ const Orders = () => {
                     )}
                     {paymentStatuses[order.orderId] === "FINISH" && (
                       <Text type="success">订单已完成</Text>
+                    )}
+                    {paymentStatuses[order.orderId] === "CANCELLED" && (
+                      <Text type="danger">订单已取消</Text>
                     )}
                   </div>
                 </div>
